@@ -1,6 +1,6 @@
 // windows section
 
-function windowCosineMateo(bufferSize) {
+function windowCosine(bufferSize) {
     let windowValues = []
     for (let i = 0; i < bufferSize; i++) {
         windowValues[i] = Math.sin(Math.PI / 1024 * (i + 0.5));
@@ -23,7 +23,7 @@ function zeroPad(data, framelength) {
 }
 
 function processSpectrogram(signalChunk, framelength) {
-    let data = math.dotMultiply(signalChunk, windowCosineMateo(framelength));
+    let data = math.dotMultiply(signalChunk, windowCosine(framelength));
     return mclt(data);
 }
 
@@ -41,7 +41,7 @@ function spectrogramMCLT(data, framelength = 1024, centered = true) {
     signal = zeroPad(signal, framelength);
 
     let values = [];
-    for (let chunk = 0; chunk <= signal.length / hopsize; chunk++) {
+    for (let chunk = 0; chunk <= signal.length / hopsize - 1; chunk++) {
         values.push(processSpectrogram(signal.slice(chunk * hopsize, (chunk * hopsize) + framelength), framelength));
     }
 
@@ -54,8 +54,8 @@ function mclt(x, odd = true) {
     let N = Math.floor(x.length / 2);
     let n0 = (N + 1) / 2;
     let pre_twiddle = [];
-    let offset = 0;
-    let outlen = 0;
+    let offset;
+    let outlen;
     if (odd) {
         outlen = N;
         for (let i = 0; i < N * 2; i++) {
@@ -89,17 +89,6 @@ function mclt(x, odd = true) {
     }
 
     return math.dotMultiply(math.dotMultiply(X.slice(0, X.length / 2), post_twiddle), math.sqrt(1 / N));
-}
-
-function imclt(X, odd = true) {
-    if (!odd && X.length % 2 === 0) {
-        throw "Even inverse CMDCT requires an odd number of coefficients"
-    }
-
-    if (odd) {
-        let N = X.length
-    }
-    // TODO
 }
 
 // example
