@@ -9,4 +9,8 @@ A function called spectrogramMCLT is provided to which the data, the framelength
 
 The result is a complex array of numbers representing MCLT Spectrogram.
 
+Dependencies:
+
+- math.js
+
 This code is under active development.
